@@ -231,6 +231,13 @@ function checkPublishToSession(
   });
 }
 
+function checkPublisherCandidate({session, publisher}: any): Promise<PublishToSessionResults> {
+    return new Promise((resolve, reject) => {
+        console.log('Publisher', publisher.getRtcStatsReport());
+        resolve({ ...{ session }, ...{ publisher } });
+    })
+}
+
 /**
  * Attempt to subscribe to our publisher
  */
@@ -337,6 +344,7 @@ export function testConnectivity(
 
     connectToSession(OT, credentials, options)
       .then((session: OT.Session) => checkPublishToSession(OT, session, options))
+      .then(checkPublisherCandidate)
       .then(checkSubscribeToSession)
       .then((results: SubscribeToSessionResults) => checkLoggingServer(OT, options, results))
       .then(onSuccess)
